@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Block Tales • Dodge Master</title>
+    <title>Block Tales · Duel in the Meadow</title>
     <!-- Pixel font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,191 +16,269 @@
         }
 
         body {
-            background: #1e1308;
+            background: #222034;
             font-family: 'Press Start 2P', cursive;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 1rem;
-            margin: 0;
-            color: #eed;
-            image-rendering: pixelated;
+            padding: 20px;
             user-select: none;
+            image-rendering: pixelated;
         }
 
-        .game-container {
-            max-width: 480px;
+        /* Game window */
+        .game-world {
+            position: relative;
             width: 100%;
-            background: #332111;
-            border: 6px solid #5a3a1e;
-            box-shadow: 0 0 0 4px #1e1308, 0 10px 20px rgba(0,0,0,0.5);
-            padding: 1.2rem 1rem;
+            max-width: 700px;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(180deg, #6dc5ff 0%, #a5e0ff 30%, #c0e8ff 100%);
+            border: 6px solid #4a3620;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 0 4px #1a1208, 0 20px 30px rgba(0,0,0,0.5);
+            margin: 0 auto;
+        }
+
+        /* Sky & scenery */
+        .sky {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 20% 20%, #fff9c4, transparent 35%);
+            pointer-events: none;
+        }
+        .sun {
+            position: absolute;
+            top: 8%;
+            left: 15%;
+            width: 60px;
+            height: 60px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ffeb3b;
+            pointer-events: none;
+        }
+        .cloud {
+            position: absolute;
+            background: #fff;
+            border-radius: 40% 50% 30% 60%;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+        .cloud1 {
+            width: 100px;
+            height: 40px;
+            top: 15%;
+            left: 55%;
+            animation: float 8s infinite alternate ease-in-out;
+        }
+        .cloud2 {
+            width: 80px;
+            height: 30px;
+            top: 25%;
+            left: 70%;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-25px); }
+        }
+
+        /* Ground & foliage */
+        .ground {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(180deg, #5b8c2a 0%, #3c6018 30%, #2d4510 100%);
+            border-top: 4px solid #8bc34a;
+            box-shadow: inset 0 10px 15px rgba(0,0,0,0.3);
+        }
+        .bush {
+            position: absolute;
+            bottom: 18%;
+            background: #2e5c1a;
+            border-radius: 50% 50% 10% 10%;
+            box-shadow: 0 8px 0 #1e3b0e, 0 0 15px rgba(0,0,0,0.4);
+            pointer-events: none;
+        }
+        .bush1 {
+            left: 10%;
+            width: 80px;
+            height: 50px;
+        }
+        .bush2 {
+            right: 8%;
+            width: 90px;
+            height: 55px;
+        }
+        .tree {
+            position: absolute;
+            bottom: 20%;
+            width: 30px;
+            height: 70px;
+            background: #5d3a1a;
+            border-radius: 5px;
+            box-shadow: 0 6px 0 #3d2510;
+            pointer-events: none;
+        }
+        .tree1 { left: 5%; }
+        .tree2 { right: 5%; }
+        .tree::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: -15px;
+            width: 60px;
+            height: 50px;
+            background: #2e6b1f;
+            border-radius: 50%;
+            box-shadow: 0 5px 0 #1e4a12;
+        }
+
+        /* Characters area */
+        .battle-row {
+            position: absolute;
+            bottom: 25%;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 0 8%;
+            pointer-events: none;
+        }
+
+        .character {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            border-radius: 8px;
-        }
-
-        h1 {
-            font-size: 1.2rem;
-            text-align: center;
-            color: #f7d44a;
-            text-shadow: 3px 3px 0 #4a2c0f;
-            letter-spacing: 1px;
-            line-height: 1.5;
-            margin-bottom: -0.3rem;
-        }
-
-        .enemy-panel {
-            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: #2b1a0b;
-            border: 4px solid #5a3a1e;
-            padding: 0.4rem 0.8rem;
-            border-radius: 0;
-            box-shadow: inset 0 -4px 0 #1e1308;
+            position: relative;
         }
-
-        .enemy-sprite {
-            font-size: 2.8rem;
-            filter: drop-shadow(0 6px 2px rgba(0,0,0,0.7));
-            transition: transform 0.1s ease;
-        }
-        .enemy-sprite.windup {
-            animation: wiggle 0.4s infinite;
-        }
-        .enemy-sprite.attack {
-            animation: lunge 0.15s ease-out;
-        }
-        @keyframes wiggle {
-            0%,100% { transform: translateX(0); }
-            25% { transform: translateX(-4px) rotate(-3deg); }
-            75% { transform: translateX(4px) rotate(3deg); }
-        }
-        @keyframes lunge {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.5) translateY(-6px); }
-            100% { transform: scale(1.1) translateY(2px); }
-        }
-
-        .enemy-name {
-            font-size: 0.6rem;
-            color: #f7d44a;
-            background: #1e1308;
-            padding: 0.3rem 0.6rem;
-            border: 2px solid #5a3a1e;
-        }
-
-        .health-row {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        .hp-label {
-            font-size: 0.7rem;
-        }
-        .hp-bar-bg {
-            flex: 1;
-            height: 18px;
+        .health-bar-bg {
+            width: 90px;
+            height: 14px;
             background: #551111;
-            border: 3px solid #2b1a0b;
+            border: 2px solid #1a1208;
+            margin-bottom: 6px;
             box-shadow: inset 0 2px 0 #330000;
         }
-        .hp-bar-fill {
+        .health-fill {
             height: 100%;
             width: 100%;
             background: #4ae04a;
-            transition: width 0.2s ease, background 0.2s;
-            box-shadow: 0 0 8px #2e2;
+            transition: width 0.25s ease, background 0.2s;
         }
-        .hp-bar-fill.danger {
+        .health-fill.danger {
             background: #ff4444;
-            box-shadow: 0 0 10px #f44;
+        }
+        .char-name {
+            font-size: 0.55rem;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
+            margin-bottom: 4px;
+        }
+        .sprite {
+            font-size: 3.5rem;
+            filter: drop-shadow(0 8px 4px rgba(0,0,0,0.5));
+            transition: transform 0.1s ease;
+        }
+        .enemy-sprite.windup {
+            animation: enemyWiggle 0.5s infinite;
+        }
+        .enemy-sprite.attacking {
+            animation: enemyLunge 0.15s ease-out;
+        }
+        @keyframes enemyWiggle {
+            0%,100% { transform: translateX(0); }
+            50% { transform: translateX(-6px); }
+        }
+        @keyframes enemyLunge {
+            0% { transform: scale(1); }
+            60% { transform: scale(1.5) translateX(-10px); }
+            100% { transform: scale(1.1) translateX(2px); }
         }
 
-        .shield-area {
+        /* Dodge prompt area */
+        .dodge-zone {
+            position: absolute;
+            bottom: 40%;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
-            position: relative;
+            flex-direction: column;
+            align-items: center;
+            pointer-events: auto;
+            z-index: 10;
         }
-
-        .shield-circle {
-            width: 200px;
-            height: 200px;
+        .dodge-button {
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             background: #3e2b17;
-            border: 8px solid #6b4d29;
+            border: 6px solid #6b4d29;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 2.5rem;
             cursor: pointer;
+            box-shadow: 0 0 0 4px #1a1208, 0 8px 20px rgba(0,0,0,0.7);
             transition: 0.1s linear;
-            box-shadow: 0 0 0 4px #1e1308, inset 0 0 20px rgba(0,0,0,0.6);
-            position: relative;
+            color: #eed;
         }
-        .shield-circle:active {
-            transform: scale(0.94);
+        .dodge-button:active {
+            transform: scale(0.9);
         }
-        .shield-circle.waiting {
+        .dodge-button.waiting {
             border-color: #d44;
-            box-shadow: 0 0 25px #d44;
+            box-shadow: 0 0 30px #d44;
         }
-        .shield-circle.ready {
+        .dodge-button.ready {
             border-color: #ff0;
             background: #3a5a2a;
-            box-shadow: 0 0 45px #ff0, 0 0 80px #ffaa00;
-            animation: pulse-shield 0.3s;
+            box-shadow: 0 0 45px #ff0;
+            animation: pulseBtn 0.3s;
         }
-        .shield-circle.flinch {
-            border-color: #fa0;
-            background: #5a4a20;
-        }
-        .shield-circle.dodge-perfect {
-            border-color: #fff;
-            background: #2a4a2a;
-        }
-        .shield-circle.dodge-good {
-            border-color: #6cf;
-            background: #1a2a3a;
-        }
-        .shield-circle.dodge-miss {
-            border-color: #f55;
-            background: #4a2020;
-        }
-        @keyframes pulse-shield {
+        @keyframes pulseBtn {
             0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        .shield-icon {
-            font-size: 3.5rem;
-            text-shadow: 0 0 10px #000;
-        }
-
-        .status-text {
+        /* UI text */
+        .game-message {
+            position: absolute;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 0.6rem;
+            color: #fff;
+            text-shadow: 2px 2px 0 #000;
             text-align: center;
-            min-height: 2.4rem;
-            line-height: 1.4;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
+            pointer-events: none;
         }
 
-        .options {
+        .control-panel {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
             display: flex;
-            gap: 0.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 20;
         }
-        .option-btn {
+        .option-btn, .action-btn {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.5rem;
+            padding: 6px 12px;
             background: #4a2a10;
             border: 3px solid #6b4d29;
             color: #eed;
-            font-family: inherit;
-            font-size: 0.55rem;
-            padding: 0.5rem 0.8rem;
             cursor: pointer;
             box-shadow: 0 4px 0 #2b1a0b;
             transition: 0.1s;
@@ -209,180 +287,151 @@
             background: #f7d44a;
             border-color: #fff;
             color: #1e1308;
-            box-shadow: 0 0 10px #f7d44a;
         }
-        .option-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #2b1a0b;
-        }
-
         .action-btn {
             background: #d44;
-            border: none;
-            border-bottom: 6px solid #822;
+            border-bottom: 4px solid #822;
             color: white;
-            font-family: inherit;
-            font-size: 0.7rem;
-            padding: 0.8rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: 0.08s;
-            box-shadow: 0 4px 0 #2b1a0b;
         }
-        .action-btn:active {
-            transform: translateY(4px);
-            border-bottom-width: 2px;
-        }
-        .action-btn:disabled {
-            opacity: 0.5;
+
+        .stats {
+            position: absolute;
+            top: 2%;
+            right: 3%;
+            font-size: 0.45rem;
+            color: #fff;
+            text-shadow: 1px 1px 0 #000;
+            text-align: right;
             pointer-events: none;
         }
 
-        .attempts-box {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem;
-            justify-content: center;
-            background: #1e1308;
-            border: 3px solid #5a3a1e;
-            padding: 0.4rem;
-            min-height: 2.5rem;
-            align-items: center;
-        }
-        .badge {
-            font-size: 0.45rem;
-            padding: 0.2rem 0.5rem;
-            border: 2px solid;
-            background: #2b1a0b;
-        }
-        .badge-perfect { border-color: #ff0; color: #ff0; }
-        .badge-good { border-color: #6cf; color: #6cf; }
-        .badge-miss { border-color: #f55; color: #f55; }
-        .badge-flinch { border-color: #fa0; color: #fa0; }
-
-        .stats-line {
-            font-size: 0.5rem;
-            text-align: center;
-            color: #bbaa88;
-        }
-
-        @media (max-width: 400px) {
-            .shield-circle {
-                width: 160px;
-                height: 160px;
+        /* Responsive scaling */
+        @media (max-width: 500px) {
+            .game-world {
+                aspect-ratio: 4 / 3;
+            }
+            .sprite {
+                font-size: 2.8rem;
+            }
+            .dodge-button {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <h1>⚔️ BLOCK TALES<br>DODGE TEST</h1>
+<div class="game-world">
+    <!-- Scenery layers (non-interactive) -->
+    <div class="sky"></div>
+    <div class="sun"></div>
+    <div class="cloud cloud1"></div>
+    <div class="cloud cloud2"></div>
+    <div class="ground"></div>
+    <div class="bush bush1"></div>
+    <div class="bush bush2"></div>
+    <div class="tree tree1"></div>
+    <div class="tree tree2"></div>
 
-    <!-- enemy -->
-    <div class="enemy-panel">
-        <span class="enemy-sprite" id="enemySprite">🟢</span>
-        <span class="enemy-name" id="enemyName">SLIME</span>
-    </div>
+    <!-- Game message -->
+    <div class="game-message" id="gameMessage">⚔️ Duel in the Meadow ⚔️</div>
 
-    <!-- HP -->
-    <div class="health-row">
-        <span class="hp-label">❤️</span>
-        <div class="hp-bar-bg">
-            <div class="hp-bar-fill" id="hpFill"></div>
+    <!-- Stats (attacks survived) -->
+    <div class="stats" id="statsDisplay">Attacks: 0</div>
+
+    <!-- Battle row: enemy (left) and player (right) -->
+    <div class="battle-row">
+        <div class="character" id="enemyChar">
+            <div class="char-name" id="enemyName">BANDIT</div>
+            <div class="health-bar-bg">
+                <div class="health-fill" id="enemyHpFill" style="width:100%"></div>
+            </div>
+            <span class="sprite enemy-sprite" id="enemySprite">🦝</span>
         </div>
-        <span id="hpText" style="font-size:0.5rem;">100/100</span>
-    </div>
-
-    <!-- Dodge circle -->
-    <div class="shield-area">
-        <div class="shield-circle" id="shieldCircle">
-            <span class="shield-icon" id="shieldIcon">🛡️</span>
+        <div class="character" id="playerChar">
+            <div class="char-name">HERO</div>
+            <div class="health-bar-bg">
+                <div class="health-fill" id="playerHpFill" style="width:100%"></div>
+            </div>
+            <span class="sprite" id="playerSprite">🛡️</span>
         </div>
     </div>
 
-    <div class="status-text" id="statusText">Face the enemy! Press START</div>
-
-    <!-- windup speed -->
-    <div class="options">
-        <button class="option-btn active" data-time="5000">⚡ FAST WINDUP</button>
-        <button class="option-btn" data-time="10000">🐌 SLOW WINDUP</button>
+    <!-- Dodge button (central) -->
+    <div class="dodge-zone">
+        <div class="dodge-button" id="dodgeBtn">🛡️</div>
     </div>
 
-    <button class="action-btn" id="actionBtn">⚔️ START BATTLE</button>
-
-    <div class="attempts-box" id="attemptsBox">
-        <span id="noAttempts" style="font-size:0.5rem;">No dodges yet</span>
-    </div>
-    <div class="stats-line" id="statsLine"></div>
-    <div style="font-size:0.4rem; color:#7a6a5a; text-align:center;">
-        <span style="border:1px solid #5a3a1e; padding:2px 6px;">SPACE</span> or <span style="border:1px solid #5a3a1e; padding:2px 6px;">CLICK</span> to dodge
+    <!-- Controls at bottom -->
+    <div class="control-panel">
+        <button class="option-btn active" id="optFast">⚡ FAST</button>
+        <button class="option-btn" id="optSlow">🐌 SLOW</button>
+        <button class="action-btn" id="restartBtn">🔄 RESTART</button>
     </div>
 </div>
 
 <script>
     (function() {
         // --- DOM refs ---
-        const shieldCircle = document.getElementById('shieldCircle');
-        const shieldIcon = document.getElementById('shieldIcon');
-        const statusText = document.getElementById('statusText');
-        const actionBtn = document.getElementById('actionBtn');
+        const dodgeBtn = document.getElementById('dodgeBtn');
         const enemySprite = document.getElementById('enemySprite');
         const enemyName = document.getElementById('enemyName');
-        const hpFill = document.getElementById('hpFill');
-        const hpText = document.getElementById('hpText');
-        const attemptsBox = document.getElementById('attemptsBox');
-        const noAttemptsSpan = document.getElementById('noAttempts');
-        const statsLine = document.getElementById('statsLine');
-        const optFast = document.querySelector('[data-time="5000"]');
-        const optSlow = document.querySelector('[data-time="10000"]');
+        const enemyHpFill = document.getElementById('enemyHpFill');
+        const playerHpFill = document.getElementById('playerHpFill');
+        const gameMessage = document.getElementById('gameMessage');
+        const statsDisplay = document.getElementById('statsDisplay');
+        const optFast = document.getElementById('optFast');
+        const optSlow = document.getElementById('optSlow');
+        const restartBtn = document.getElementById('restartBtn');
+
+        // --- Audio (simple beeps) ---
+        let audioCtx = null;
+        function initAudio() {
+            if (audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            } catch(e) {}
+        }
+        function playBeep(freq, dur, type='square', vol=0.08) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + dur);
+        }
 
         // --- Game state ---
         const MAX_HP = 100;
-        let hp = MAX_HP;
-        let maxWindupTime = 5000;        // 5s default
-        const MIN_WINDUP = 1000;         // minimum delay before exclamation
-        let currentPhase = 'idle';       // idle | waiting | ready | flinch | result | gameover
+        let playerHp = MAX_HP;
+        let enemyHp = MAX_HP;
+        let maxWindup = 5000;       // ms
+        const MIN_WINDUP = 1000;
+        let phase = 'idle';         // idle, waiting, ready, flinch, result, gameover, victory
         let windupTimer = null;
-        let signalTimestamp = null;
-        let attempts = [];               // { outcome: 'perfect'|'good'|'miss'|'flinch', ms: number|null }
+        let signalTime = null;
+        let attackCount = 0;
+        const enemyType = { name: 'BANDIT', sprite: '🦝' };
 
         // --- Helper functions ---
-        function updateHPDisplay() {
-            let percent = (hp / MAX_HP) * 100;
-            hpFill.style.width = percent + '%';
-            hpText.textContent = `${hp}/${MAX_HP}`;
-            if (percent < 25) {
-                hpFill.classList.add('danger');
-            } else {
-                hpFill.classList.remove('danger');
-            }
+        function updateHpBars() {
+            let pPercent = (playerHp / MAX_HP) * 100;
+            playerHpFill.style.width = pPercent + '%';
+            playerHpFill.classList.toggle('danger', pPercent < 25);
+
+            let ePercent = (enemyHp / MAX_HP) * 100;
+            enemyHpFill.style.width = ePercent + '%';
+            enemyHpFill.classList.toggle('danger', ePercent < 25);
         }
 
-        function resetHP() {
-            hp = MAX_HP;
-            updateHPDisplay();
-        }
-
-        function applyDamage(dmg) {
-            hp = Math.max(0, hp - dmg);
-            updateHPDisplay();
-            if (hp <= 0) {
-                gameOver();
-                return true;
-            }
-            return false;
-        }
-
-        function gameOver() {
-            clearWindup();
-            currentPhase = 'gameover';
-            setShieldVisual('idle');
-            shieldIcon.textContent = '💀';
-            statusText.textContent = 'You fell... Press RESTART to try again.';
-            actionBtn.textContent = '🔄 RESTART';
-            actionBtn.disabled = false;
-            enemySprite.classList.remove('windup', 'attack');
-            enemyName.textContent = 'DEFEATED';
+        function setMessage(text) {
+            gameMessage.textContent = text;
         }
 
         function clearWindup() {
@@ -392,241 +441,223 @@
             }
         }
 
-        function setShieldVisual(style) {
-            shieldCircle.className = 'shield-circle ' + style;
+        function gameOver() {
+            clearWindup();
+            phase = 'gameover';
+            dodgeBtn.className = 'dodge-button';
+            dodgeBtn.textContent = '💀';
+            enemySprite.classList.remove('windup', 'attacking');
+            setMessage('DEFEATED... Press RESTART');
+            playBeep(150, 0.4, 'sawtooth', 0.1);
+            playBeep(100, 0.6, 'triangle', 0.08);
         }
 
-        function startBattle() {
-            // Reset if gameover or idle
-            if (hp <= 0) {
-                resetHP();
-                attempts = [];
-                renderAttempts();
-            }
+        function victory() {
             clearWindup();
-            currentPhase = 'waiting';
-            setShieldVisual('waiting');
-            shieldIcon.textContent = '⏳';
-            statusText.textContent = 'Enemy is winding up... wait!';
-            actionBtn.textContent = '...';
-            actionBtn.disabled = true;
-            enemySprite.classList.add('windup');
-            enemySprite.classList.remove('attack');
-            enemyName.textContent = 'SLIME';
+            phase = 'victory';
+            dodgeBtn.className = 'dodge-button';
+            dodgeBtn.textContent = '🏆';
+            enemySprite.classList.remove('windup', 'attacking');
+            setMessage('VICTORY! You win!');
+            playBeep(523, 0.15);
+            setTimeout(() => playBeep(659, 0.15), 150);
+            setTimeout(() => playBeep(784, 0.2), 300);
+        }
 
-            const delay = MIN_WINDUP + Math.random() * (maxWindupTime - MIN_WINDUP);
+        function startWindup() {
+            if (phase === 'gameover' || phase === 'victory') return;
+            clearWindup();
+            phase = 'waiting';
+            dodgeBtn.className = 'dodge-button waiting';
+            dodgeBtn.textContent = '⏳';
+            enemySprite.classList.add('windup');
+            enemySprite.classList.remove('attacking');
+            setMessage('Bandit is winding up...');
+            const delay = MIN_WINDUP + Math.random() * (maxWindup - MIN_WINDUP);
             windupTimer = setTimeout(() => {
                 showExclamation();
             }, delay);
         }
 
         function showExclamation() {
-            if (currentPhase !== 'waiting') return;
-            currentPhase = 'ready';
-            signalTimestamp = performance.now();
-            windupTimer = null;
-            setShieldVisual('ready');
-            shieldIcon.textContent = '❗';
-            statusText.textContent = '❗ DODGE NOW! ❗';
-            actionBtn.disabled = true;
+            if (phase !== 'waiting') return;
+            phase = 'ready';
+            signalTime = performance.now();
+            dodgeBtn.className = 'dodge-button ready';
+            dodgeBtn.textContent = '❗';
             enemySprite.classList.remove('windup');
-            enemySprite.classList.add('attack');
-            enemyName.textContent = 'SLIME';
+            enemySprite.classList.add('attacking');
+            setMessage('DODGE NOW!');
+            playBeep(800, 0.08, 'square', 0.07);
         }
 
-        function handlePlayerAction() {
-            switch (currentPhase) {
+        function handleDodge() {
+            initAudio();
+            switch (phase) {
                 case 'idle':
-                    startBattle();
+                    // Start duel if not yet begun
+                    startWindup();
                     break;
                 case 'waiting':
-                    // clicked too early = flinch
                     flinch();
                     break;
                 case 'ready':
-                    // measure reaction
-                    if (signalTimestamp) {
-                        let ms = Math.round(performance.now() - signalTimestamp);
-                        resolveDodge(ms);
+                    if (signalTime) {
+                        let reactionMs = Math.round(performance.now() - signalTime);
+                        resolveDodge(reactionMs);
                     }
                     break;
                 case 'flinch':
                 case 'result':
-                    // After a short pause, auto restart if alive
-                    resetToIdle();
-                    if (hp > 0) startBattle();
+                    // automatically proceed to next attack after a short delay if alive
+                    // do nothing, the auto-loop will handle it
                     break;
                 case 'gameover':
-                    // restart from game over
-                    resetHP();
-                    attempts = [];
-                    renderAttempts();
-                    resetToIdle();
-                    startBattle();
+                case 'victory':
+                    restartGame();
                     break;
             }
         }
 
         function flinch() {
             clearWindup();
-            currentPhase = 'flinch';
-            signalTimestamp = null;
-            setShieldVisual('flinch');
-            shieldIcon.textContent = '😵';
-            statusText.textContent = 'Too early! You flinched (-10 HP).';
-            actionBtn.textContent = '↺ Retry';
-            actionBtn.disabled = false;
-            enemySprite.classList.remove('windup', 'attack');
-            enemyName.textContent = 'SLIME';
-            applyDamage(10);
-            attempts.push({ outcome: 'flinch', ms: null });
-            renderAttempts();
-            // auto reset after 1.5s if still alive
+            phase = 'flinch';
+            dodgeBtn.className = 'dodge-button';
+            dodgeBtn.textContent = '😵';
+            enemySprite.classList.remove('windup', 'attacking');
+            setMessage('Too early! You flinch (-10 HP)');
+            playerHp = Math.max(0, playerHp - 10);
+            updateHpBars();
+            attackCount++;
+            statsDisplay.textContent = 'Attacks: ' + attackCount;
+            playBeep(200, 0.2, 'triangle', 0.1);
+            if (playerHp <= 0) {
+                gameOver();
+                return;
+            }
+            // Auto-advance after 1.5s
             setTimeout(() => {
-                if (currentPhase === 'flinch' && hp > 0) {
-                    resetToIdle();
+                if (phase === 'flinch' && playerHp > 0) {
+                    phase = 'idle';
+                    startWindup();
                 }
             }, 1500);
         }
 
-        function resolveDodge(ms) {
-            let outcome, dmg, label, visualClass;
-            if (ms <= 200) {
+        function resolveDodge(reactionMs) {
+            let outcome, dmgToEnemy, dmgToPlayer, msg, icon;
+            // Tiers based on reaction time
+            if (reactionMs <= 200) {
                 outcome = 'perfect';
-                dmg = 0;
-                label = 'PERFECT DODGE!';
-                visualClass = 'dodge-perfect';
-                shieldIcon.textContent = '✨';
-            } else if (ms <= 450) {
+                dmgToEnemy = 30;
+                dmgToPlayer = 0;
+                msg = `PERFECT! ${reactionMs}ms -30 ENEMY HP`;
+                icon = '✨';
+                playBeep(1000, 0.1, 'square', 0.09);
+            } else if (reactionMs <= 300) {
+                outcome = 'great';
+                dmgToEnemy = 20;
+                dmgToPlayer = 0;
+                msg = `GREAT! ${reactionMs}ms -20 ENEMY HP`;
+                icon = '🔥';
+                playBeep(800, 0.1, 'square', 0.07);
+            } else if (reactionMs <= 400) {
                 outcome = 'good';
-                dmg = 5;
-                label = 'GOOD DODGE';
-                visualClass = 'dodge-good';
-                shieldIcon.textContent = '👍';
+                dmgToEnemy = 10;
+                dmgToPlayer = 0;
+                msg = `GOOD! ${reactionMs}ms -10 ENEMY HP`;
+                icon = '👍';
+                playBeep(600, 0.1, 'square', 0.07);
             } else {
                 outcome = 'miss';
-                dmg = 20;
-                label = 'MISS!';
-                visualClass = 'dodge-miss';
-                shieldIcon.textContent = '💥';
+                dmgToEnemy = 0;
+                dmgToPlayer = 15;
+                msg = `MISS! ${reactionMs}ms -15 YOUR HP`;
+                icon = '💥';
+                playBeep(250, 0.25, 'sawtooth', 0.1);
             }
 
-            currentPhase = 'result';
-            setShieldVisual(visualClass);
-            statusText.textContent = `${label} (${ms}ms) -${dmg} HP`;
-            actionBtn.textContent = '↺ Next Attack';
-            actionBtn.disabled = false;
-            enemySprite.classList.remove('windup', 'attack');
-            enemyName.textContent = 'SLIME';
+            phase = 'result';
+            dodgeBtn.className = 'dodge-button';
+            dodgeBtn.textContent = icon;
+            enemySprite.classList.remove('windup', 'attacking');
 
-            applyDamage(dmg);
-            attempts.push({ outcome: outcome, ms: ms });
-            if (attempts.length > 8) attempts.shift();
-            renderAttempts();
+            // Apply damage
+            enemyHp = Math.max(0, enemyHp - dmgToEnemy);
+            playerHp = Math.max(0, playerHp - dmgToPlayer);
+            updateHpBars();
+            attackCount++;
+            statsDisplay.textContent = 'Attacks: ' + attackCount;
+            setMessage(msg);
 
-            // auto return to idle after a moment
+            // Check win/lose
+            if (enemyHp <= 0) {
+                victory();
+                return;
+            }
+            if (playerHp <= 0) {
+                gameOver();
+                return;
+            }
+
+            // Auto next attack after delay
             setTimeout(() => {
-                if (currentPhase === 'result' && hp > 0) {
-                    resetToIdle();
+                if (phase === 'result' && playerHp > 0 && enemyHp > 0) {
+                    phase = 'idle';
+                    startWindup();
                 }
             }, 1600);
         }
 
-        function resetToIdle() {
+        function restartGame() {
             clearWindup();
-            currentPhase = 'idle';
-            setShieldVisual('idle');
-            shieldIcon.textContent = '🛡️';
-            statusText.textContent = 'Ready for next attack.';
-            actionBtn.textContent = '⚔️ START BATTLE';
-            actionBtn.disabled = false;
-            enemySprite.classList.remove('windup', 'attack');
-            enemyName.textContent = 'SLIME';
+            playerHp = MAX_HP;
+            enemyHp = MAX_HP;
+            attackCount = 0;
+            phase = 'idle';
+            updateHpBars();
+            dodgeBtn.className = 'dodge-button';
+            dodgeBtn.textContent = '🛡️';
+            enemySprite.classList.remove('windup', 'attacking');
+            enemyName.textContent = enemyType.name;
+            enemySprite.textContent = enemyType.sprite;
+            setMessage('⚔️ Duel in the Meadow ⚔️');
+            statsDisplay.textContent = 'Attacks: 0';
         }
 
-        function renderAttempts() {
-            if (attempts.length === 0) {
-                noAttemptsSpan.style.display = 'inline';
-                attemptsBox.innerHTML = '';
-                attemptsBox.appendChild(noAttemptsSpan);
-                statsLine.textContent = '';
-                return;
-            }
-            // Remove no-attempts span if present
-            if (noAttemptsSpan.parentNode === attemptsBox) {
-                noAttemptsSpan.style.display = 'none';
-            }
-            let html = '';
-            attempts.forEach(a => {
-                let cls = '';
-                if (a.outcome === 'perfect') cls = 'badge-perfect';
-                else if (a.outcome === 'good') cls = 'badge-good';
-                else if (a.outcome === 'miss') cls = 'badge-miss';
-                else if (a.outcome === 'flinch') cls = 'badge-flinch';
-                let txt = a.outcome === 'flinch' ? 'FL' : (a.ms !== null ? a.ms : '?');
-                html += `<span class="badge ${cls}">${txt}</span>`;
-            });
-            attemptsBox.innerHTML = html;
-
-            // stats
-            const reactionTimes = attempts.filter(a => a.ms !== null).map(a => a.ms);
-            if (reactionTimes.length > 0) {
-                let avg = Math.round(reactionTimes.reduce((s,v)=>s+v,0)/reactionTimes.length);
-                let best = Math.min(...reactionTimes);
-                statsLine.textContent = `Avg: ${avg}ms | Best: ${best}ms | Dodges: ${attempts.length}`;
-            } else {
-                statsLine.textContent = `Attempts: ${attempts.length}`;
-            }
-        }
-
-        // --- Event binding ---
-        shieldCircle.addEventListener('click', (e) => {
+        // --- Event listeners ---
+        dodgeBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            handlePlayerAction();
+            handleDodge();
         });
-        shieldCircle.addEventListener('touchstart', (e) => {
+        dodgeBtn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            handlePlayerAction();
+            handleDodge();
         });
         document.addEventListener('keydown', (e) => {
             if (e.code === 'Space' || e.key === ' ') {
                 e.preventDefault();
-                handlePlayerAction();
+                handleDodge();
             }
         });
 
-        actionBtn.addEventListener('click', () => {
-            if (currentPhase === 'idle' || currentPhase === 'gameover') {
-                if (hp <= 0) {
-                    resetHP();
-                    attempts = [];
-                    renderAttempts();
-                }
-                resetToIdle();
-                startBattle();
-            } else if (currentPhase === 'flinch' || currentPhase === 'result') {
-                resetToIdle();
-                if (hp > 0) startBattle();
-            }
-        });
+        restartBtn.addEventListener('click', restartGame);
 
         optFast.addEventListener('click', () => {
-            if (currentPhase === 'waiting' || currentPhase === 'ready') return;
-            maxWindupTime = 5000;
+            if (phase === 'waiting' || phase === 'ready') return;
+            maxWindup = 5000;
             optFast.classList.add('active');
             optSlow.classList.remove('active');
         });
         optSlow.addEventListener('click', () => {
-            if (currentPhase === 'waiting' || currentPhase === 'ready') return;
-            maxWindupTime = 10000;
+            if (phase === 'waiting' || phase === 'ready') return;
+            maxWindup = 10000;
             optSlow.classList.add('active');
             optFast.classList.remove('active');
         });
 
-        // initial setup
-        resetToIdle();
-        resetHP();
-        renderAttempts();
+        // Initial setup
+        restartGame();
     })();
 </script>
 </body>
